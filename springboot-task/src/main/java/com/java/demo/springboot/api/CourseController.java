@@ -9,16 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java.demo.springboot.dto.CourseDto;
-import com.java.demo.springboot.entity.Course;
 import com.java.demo.springboot.svc.CourseService;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class CourseController {
     private CourseService courseService;
 
@@ -26,13 +26,13 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    @GetMapping
+    @GetMapping("/courses")
     public List<CourseDto> getallCourses(){
         return courseService.getAllCourses();
     }
 
     @PostMapping()
-        public ResponseEntity<Course> createCourse( @RequestBody CourseDto courseDto){
+        public ResponseEntity<CourseDto> createCourse( @RequestBody CourseDto courseDto){
         return new ResponseEntity<>(courseService.createCourse(courseDto), HttpStatus.CREATED);
     }
 

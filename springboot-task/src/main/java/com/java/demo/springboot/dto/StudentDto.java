@@ -18,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudentDto {
+    private Long id;
     private String name;
     private String gender;
     private LocalDate dateOfBirth;

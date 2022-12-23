@@ -40,12 +40,18 @@ public class TeacherServiceImpl implements TeacherService {
         return teachers.stream().map(teacher->mapToDto(teacher)).collect(Collectors.toList());
 
     }
+    // convert entity to DTO
+
     private TeacherDto mapToDto(Teacher teacher){
         TeacherDto teacherDto =new TeacherDto();
+        teacherDto.setId(teacher.getId());
         teacherDto.setName(teacher.getName());
         teacherDto.setAge(teacher.getAge());
         return teacherDto;
     }
+
+    //convert DTO to entity
+
     private Teacher mapToEntity(TeacherDto teacherDto){
         Teacher teacher=new Teacher();
         teacher.setName(teacherDto.getName());

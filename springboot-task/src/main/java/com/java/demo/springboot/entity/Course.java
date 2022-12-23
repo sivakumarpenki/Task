@@ -1,7 +1,6 @@
 package com.java.demo.springboot.entity;
 
 import java.util.HashSet;
-
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -40,6 +39,6 @@ public class Course {
     private Teacher teacher;
 
     @ManyToMany(mappedBy="course")
-     private Set<Student> student= new HashSet<>();
+    private Set<Student> student= new HashSet<>();
     
 }

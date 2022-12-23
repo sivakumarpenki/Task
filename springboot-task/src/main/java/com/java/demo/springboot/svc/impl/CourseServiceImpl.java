@@ -6,6 +6,7 @@ import java.util.List;
 
 import java.util.stream.Collectors;
 
+
 import org.springframework.stereotype.Service;
 
 import com.java.demo.springboot.dto.CourseDto;
@@ -13,6 +14,7 @@ import com.java.demo.springboot.dto.CourseDto;
 import com.java.demo.springboot.entity.Course;
 
 import com.java.demo.springboot.entity.Teacher;
+import com.java.demo.springboot.exception.ResourceNotFoundException;
 import com.java.demo.springboot.repository.CourseRepository;
 import com.java.demo.springboot.repository.StudentRepository;
 import com.java.demo.springboot.repository.TeacherRepository;
@@ -31,11 +33,12 @@ public class CourseServiceImpl implements CourseService {
         this.teacherRepository=teacherRepository;
     }    
     @Override 
-    public Course createCourse(CourseDto courseDto) {
+    public CourseDto createCourse(CourseDto courseDto) {
         Course course=mapToEntity(courseDto);
         Course newCourse=courseRepository.save(course);
 
-        return newCourse;
+        CourseDto courseResponse= mapToDto(newCourse);
+        return courseResponse;
     }
     
 
@@ -49,7 +52,7 @@ public class CourseServiceImpl implements CourseService {
     
     private CourseDto mapToDto(Course course){
         CourseDto courseDto= new CourseDto();
-       
+        courseDto.setId(course.getId());
         courseDto.setName(course.getName());
 
         return courseDto;
@@ -62,8 +65,6 @@ public class CourseServiceImpl implements CourseService {
     
         course.setName(courseDto.getName());
 
-   
-
         return course;
     }
 
@@ -73,18 +74,19 @@ public class CourseServiceImpl implements CourseService {
        Course course= mapToEntity(courseDto);
 
        //retrieve teacher by id
-       Teacher teacher  =teacherRepository.findById(teacherId).orElseThrow(()->new RuntimeException("not found"));
+       Teacher teacher  =teacherRepository.findById(teacherId).orElseThrow(()->new ResourceNotFoundException("teacher", "id", "id"));
 
        //set teacher to entity
        course.setTeacher(teacher);
 
        //course entity to db
+       
        Course newCourse= courseRepository.save(course);
         return mapToDto(newCourse);
     }
-
-
 }
+
+
 
 
 

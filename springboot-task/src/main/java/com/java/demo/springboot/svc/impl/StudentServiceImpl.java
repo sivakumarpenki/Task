@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.java.demo.springboot.dto.StudentDto;
 import com.java.demo.springboot.entity.Course;
 import com.java.demo.springboot.entity.Student;
+import com.java.demo.springboot.exception.ResourceNotFoundException;
 import com.java.demo.springboot.repository.CourseRepository;
 import com.java.demo.springboot.repository.StudentRepository;
 import com.java.demo.springboot.svc.StudentService;
@@ -50,8 +51,10 @@ public class StudentServiceImpl implements StudentService{
         return students.stream().map(student->mapToDto(student)).collect(Collectors.toList());
            
     }
+    // convert entity to DTO
     private StudentDto mapToDto(Student student){
         StudentDto studentDto =new StudentDto();
+        studentDto.setId(student.getId());
         studentDto.setName(student.getName());
         studentDto.setGender(student.getGender());
         studentDto.setDateOfBirth(student.getDateOfBirth());
@@ -86,7 +89,7 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public StudentDto getStudentById(long id) {
-        Student student = studentRepository.findById(id). orElseThrow(()->new RuntimeException("not found"));
+        Student student = studentRepository.findById(id). orElseThrow(()->new ResourceNotFoundException("student", "id", "id"));
         return mapToDto(student);
     }
 
