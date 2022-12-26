@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 
@@ -25,11 +25,13 @@ public class StudentServiceImpl implements StudentService{
 
     private StudentRepository studentRepository;
     private CourseRepository courseRepository;
+    private ModelMapper mapper;
     
 
-    public StudentServiceImpl(StudentRepository studentRepository, CourseRepository courseRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository, CourseRepository courseRepository, ModelMapper mapper) {
         this.studentRepository = studentRepository;
         this.courseRepository=courseRepository;
+        this.mapper=mapper;
     }
 
 
@@ -53,11 +55,7 @@ public class StudentServiceImpl implements StudentService{
     }
     // convert entity to DTO
     private StudentDto mapToDto(Student student){
-        StudentDto studentDto =new StudentDto();
-        studentDto.setId(student.getId());
-        studentDto.setName(student.getName());
-        studentDto.setGender(student.getGender());
-        studentDto.setDateOfBirth(student.getDateOfBirth());
+        StudentDto studentDto=mapper.map(student, StudentDto.class);
 
         List<Long> courseIds= new LinkedList<>();
         for(Course course:student.getCourse()){
@@ -70,10 +68,8 @@ public class StudentServiceImpl implements StudentService{
     }
     //convert Dto  to entity
     private Student  mapToEntity(StudentDto studentDto){
-        Student student=new Student();
-        student.setName(studentDto.getName());
-        student.setGender(studentDto.getGender());
-        student.setDateOfBirth(studentDto.getDateOfBirth());
+        Student student= mapper.map(studentDto, Student.class);
+
         if(!studentDto.getCourseIds().isEmpty()){
 
             List<Course> listCourses = courseRepository.findAllById(studentDto.getCourseIds());
@@ -89,7 +85,7 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public StudentDto getStudentById(long id) {
-        Student student = studentRepository.findById(id). orElseThrow(()->new ResourceNotFoundException("student", "id", "id"));
+        Student student = studentRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("student", "id", id));
         return mapToDto(student);
     }
 

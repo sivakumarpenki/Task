@@ -3,6 +3,7 @@ package com.java.demo.springboot.svc.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 
@@ -16,10 +17,13 @@ import com.java.demo.springboot.svc.TeacherService;
 public class TeacherServiceImpl implements TeacherService {
 
     private TeacherRepository teacherRepository;
+
+    private ModelMapper mapper;
     
 
-    public TeacherServiceImpl(TeacherRepository teacherRepository) {
+    public TeacherServiceImpl(TeacherRepository teacherRepository, ModelMapper mapper) {
         this.teacherRepository = teacherRepository;
+        this.mapper=mapper;
     }
 
 
@@ -43,19 +47,16 @@ public class TeacherServiceImpl implements TeacherService {
     // convert entity to DTO
 
     private TeacherDto mapToDto(Teacher teacher){
-        TeacherDto teacherDto =new TeacherDto();
-        teacherDto.setId(teacher.getId());
-        teacherDto.setName(teacher.getName());
-        teacherDto.setAge(teacher.getAge());
+        TeacherDto teacherDto=mapper.map(teacher, TeacherDto.class);
+
         return teacherDto;
     }
 
     //convert DTO to entity
 
     private Teacher mapToEntity(TeacherDto teacherDto){
-        Teacher teacher=new Teacher();
-        teacher.setName(teacherDto.getName());
-        teacher.setAge(teacherDto.getAge());
+        Teacher teacher =mapper.map(teacherDto, Teacher.class);
+
         return teacher;
     }
     

@@ -6,7 +6,7 @@ import java.util.List;
 
 import java.util.stream.Collectors;
 
-
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.java.demo.springboot.dto.CourseDto;
@@ -26,11 +26,13 @@ public class CourseServiceImpl implements CourseService {
     private CourseRepository courseRepository;
     private StudentRepository studentRepository;
     private TeacherRepository teacherRepository;
+    private ModelMapper mapper;
 
-    public CourseServiceImpl(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository, ModelMapper mapper) {
         this.courseRepository = courseRepository;
         this.studentRepository=studentRepository;
         this.teacherRepository=teacherRepository;
+        this.mapper=mapper;
     }    
     @Override 
     public CourseDto createCourse(CourseDto courseDto) {
@@ -51,9 +53,7 @@ public class CourseServiceImpl implements CourseService {
     
     
     private CourseDto mapToDto(Course course){
-        CourseDto courseDto= new CourseDto();
-        courseDto.setId(course.getId());
-        courseDto.setName(course.getName());
+        CourseDto courseDto= mapper.map(course, CourseDto.class);
 
         return courseDto;
     }
@@ -61,10 +61,7 @@ public class CourseServiceImpl implements CourseService {
 
 
     private Course mapToEntity(CourseDto courseDto){
-        Course course = new Course();
-    
-        course.setName(courseDto.getName());
-
+        Course course =mapper.map(courseDto, Course.class);
         return course;
     }
 
@@ -74,7 +71,7 @@ public class CourseServiceImpl implements CourseService {
        Course course= mapToEntity(courseDto);
 
        //retrieve teacher by id
-       Teacher teacher  =teacherRepository.findById(teacherId).orElseThrow(()->new ResourceNotFoundException("teacher", "id", "id"));
+       Teacher teacher  =teacherRepository.findById(teacherId).orElseThrow(()->new ResourceNotFoundException("teacher", "id", teacherId));
 
        //set teacher to entity
        course.setTeacher(teacher);
